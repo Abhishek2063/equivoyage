@@ -35,7 +35,7 @@ export const POST = async (req) => {
     // Check if the email already exists in the database
     if (email) {
       const existingUser = await prisma.user.findUnique({
-        where: { email, isDeleted:false },
+        where: { email, isDeleted: false },
       });
 
       // If the email is already taken, return an error response
@@ -86,53 +86,67 @@ export const POST = async (req) => {
  * @returns {Promise<NextResponse>} - The HTTP response object.
  */
 export const GET = async (req) => {
-    try {
-        console.log(req.params,"req.params");
-      // Extract pageNumber from the query parameters, default to 1 if not provided
-      const { searchParams } = new URL(req.url);
-      const pageNumber = searchParams.get('pageNumber') || 1;
-  
-      // Set limit for each page
-      const limit = 1;
-  
-      // Calculate offset based on pageNumber and limit
-      const offset = (pageNumber - 1) * limit;
-  
-      // Fetch total number of undeleted records
-      const totalRecords = await prisma.user.count({ where: { isDeleted: false } });
-  
-      // Calculate total number of pages
-      const totalPages = Math.ceil(totalRecords / limit);
-  
-      // Fetch records for the current page, ordered by createdAt in descending order
-      const records = await prisma.user.findMany({
-        take: limit,
-        skip: offset,
-        where: {
-          isDeleted: false,
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
-  
-      // Prepare the response object with pagination information
-      const response = {
-        totalRecords,
-        totalPages,
-        limit,
-        page: pageNumber,
-        records,
-      };
-  
-      // Return a success response with the paginated user records
-      return sendResponse(NextResponse, 200, true, 'User records fetched successfully.', response);
-    } catch (error) {
-      // Handle any errors that occur during the process
-      console.error('Error fetching user records:', error);
-      return sendResponse(NextResponse, 500, false, 'Internal server error');
-    } finally {
-      // Disconnect from the Prisma client to close the database connection
-      await prisma.$disconnect();
-    }
-  };
+  try {
+    console.log(req.params, "req.params");
+    // Extract pageNumber from the query parameters, default to 1 if not provided
+    const { searchParams } = new URL(req.url);
+    const pageNumber = searchParams.get("pageNumber") || 1;
+
+    // Set limit for each page
+    const limit = 1;
+
+    // Calculate offset based on pageNumber and limit
+    const offset = (pageNumber - 1) * limit;
+
+    // Fetch total number of undeleted records
+    const totalRecords = await prisma.user.count({
+      where: { isDeleted: false },
+    });
+
+    // Calculate total number of pages
+    const totalPages = Math.ceil(totalRecords / limit);
+
+    // Fetch records for the current page, ordered by createdAt in descending order
+    const records = await prisma.user.findMany({
+      take: limit,
+      skip: offset,
+      where: {
+        isDeleted: false,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+      },
+    });
+
+    // Prepare the response object with pagination information
+    const response = {
+      totalRecords,
+      totalPages,
+      limit,
+      page: pageNumber,
+      records,
+    };
+
+    // Return a success response with the paginated user records
+    return sendResponse(
+      NextResponse,
+      200,
+      true,
+      "User records fetched successfully.",
+      response
+    );
+  } catch (error) {
+    // Handle any errors that occur during the process
+    console.error("Error fetching user records:", error);
+    return sendResponse(NextResponse, 500, false, "Internal server error");
+  } finally {
+    // Disconnect from the Prisma client to close the database connection
+    await prisma.$disconnect();
+  }
+};
