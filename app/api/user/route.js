@@ -15,7 +15,14 @@ export const POST = async (req) => {
   try {
     // Validate input data
     const data = await req.json();
-    const { firstName = "", lastName = "", email = "", password = "" } = data;
+    const {
+      firstName = "",
+      lastName = "",
+      email = "",
+      password = "",
+      isCreatedByLeader = false,
+      tripId = "",
+    } = data;
 
     // Validate user input and check for errors
     const validationErrors = validateUserInput({
@@ -23,6 +30,8 @@ export const POST = async (req) => {
       lastName,
       email,
       password,
+      isCreatedByLeader,
+      tripId,
     });
 
     // If validation errors exist, return a response with the errors
@@ -52,24 +61,56 @@ export const POST = async (req) => {
     // Hash the password using bcrypt
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create a new user in the database
-    const newUser = await prisma.user.create({
-      data: {
-        firstName,
-        lastName,
-        email,
-        password: hashedPassword,
-      },
-    });
+    if (isCreatedByLeader) {
+      const existingTrip = await prisma.trip.findUnique({
+        where: { id: tripId, isDeleted: false },
+      });
 
-    // Return a success response with the created user data
-    return sendResponse(
-      NextResponse,
-      200,
-      true,
-      "User created successfully.",
-      newUser
-    );
+      if (!existingTrip) {
+        return sendResponse(NextResponse, 400, false, "Trip is not exist.");
+      }
+
+      // Create a new user in the database
+      const newUser = await prisma.user.create({
+        data: {
+          firstName,
+          lastName,
+          email,
+          password: hashedPassword,
+        },
+      });
+
+      await prisma.participant.create({
+        data: {
+          userId: newUser.id,
+          tripId: parseInt(tripId),
+        },
+      });
+      // Return a success response with the created user data
+      return sendResponse(
+        NextResponse,
+        200,
+        true,
+        "Participant added successfully."
+      );
+    } else {
+      // Create a new user in the database
+      await prisma.user.create({
+        data: {
+          firstName,
+          lastName,
+          email,
+          password: hashedPassword,
+        },
+      });
+      // Return a success response with the created user data
+      return sendResponse(
+        NextResponse,
+        200,
+        true,
+        "User created successfully."
+      );
+    }
   } catch (error) {
     // Handle any errors that occur during the user creation process
     console.error("Error creating user:", error);

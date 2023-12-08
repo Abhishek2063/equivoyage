@@ -2,7 +2,7 @@
 
 import validator from "validator";
 
-const validateUserInput = ({ firstName, lastName, email, password }) => {
+const validateUserInput = ({ firstName, lastName, email, password ,  isCreatedByLeader,tripId}) => {
   const errors = [];
 
   if (!validator.isLength(firstName, { min: 1, max: 20 })) {
@@ -19,6 +19,9 @@ const validateUserInput = ({ firstName, lastName, email, password }) => {
 
   if (!validator.isLength(password, { min: 1, max: 255 })) {
     errors.push("Password must be between 1 and 255 characters.");
+  }
+  if (isCreatedByLeader && !tripId) {
+    errors.push("Trip Id is required.");
   }
 
   return errors;
