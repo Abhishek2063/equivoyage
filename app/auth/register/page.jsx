@@ -1,3 +1,4 @@
+"use client";
 // pages/Registration.js
 
 import Link from "next/link";
@@ -8,6 +9,7 @@ import TextInput from "@/components/textInput";
 import { LOGIN } from "@/routeConstant";
 import SubmitButton from "@/components/submitButton";
 import EmailInput from "@/components/emailInput";
+import PasswordInput from "@/components/passwordInput";
 
 const Registration = () => {
   return (
@@ -52,6 +54,23 @@ const Registration = () => {
             placeholder="Enter email."
             label="Email"
             maxLength={255}
+          />
+          <PasswordInput 
+           name="password"
+           isRequired={true}
+           // value="firstName"
+           placeholder="Enter Password."
+           label="Password"
+           maxLength={255}
+          />
+
+<PasswordInput 
+           name="confirmPassword"
+           isRequired={true}
+           // value="firstName"
+           placeholder="Enter confirm password."
+           label="Confirm Password"
+           maxLength={255}
           />
           {/* Register button */}
           <SubmitButton buttonName="Sign Up" />
