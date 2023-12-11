@@ -27,14 +27,15 @@ model User {
 }
 
 model Token {
-  id        Int       @id @default(autoincrement()) @map(name: "id")
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId    Int       @map(name: "userId")
-  token     String    @db.VarChar(1000)
-  createdAt DateTime  @default(now()) @map(name: "created_at")
-  updatedAt DateTime  @default(now()) @updatedAt @map(name: "updated_at")
-  isDeleted Boolean   @default(false)
-  deletedAt DateTime? @map(name: "deleted_at")
+  id           Int       @id @default(autoincrement()) @map(name: "id")
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId       Int       @map(name: "userId")
+  token        String    @db.VarChar(1000)
+  refreshToken String    @db.VarChar(1000)
+  createdAt    DateTime  @default(now()) @map(name: "created_at")
+  updatedAt    DateTime  @default(now()) @updatedAt @map(name: "updated_at")
+  isDeleted    Boolean   @default(false)
+  deletedAt    DateTime? @map(name: "deleted_at")
 }
 
 model Trip {
