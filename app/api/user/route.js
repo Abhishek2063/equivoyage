@@ -6,6 +6,7 @@ import { validateUserInput } from "@/api_helpers/validations/userValidation";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
+import { registrationEmailContent } from "@/api_helpers/helpers/mail";
 
 // Initialize Prisma client
 const prisma = new PrismaClient();
@@ -86,6 +87,7 @@ export const POST = async (req) => {
           tripId: parseInt(tripId),
         },
       });
+      await registrationEmailContent({ firstName, lastName, email, password });
       // Return a success response with the created user data
       return sendResponse(
         NextResponse,
@@ -103,6 +105,8 @@ export const POST = async (req) => {
           password: hashedPassword,
         },
       });
+
+      await registrationEmailContent({ firstName, lastName, email, password });
       // Return a success response with the created user data
       return sendResponse(
         NextResponse,

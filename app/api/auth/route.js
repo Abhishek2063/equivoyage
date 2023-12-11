@@ -2,9 +2,14 @@
 import { sendResponse } from "@/api_helpers/helpers/responseHelper";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import bcrypt from "bcrypt";
 import { validateLoginInput } from "@/api_helpers/validations/loginValidation";
 import jwt from "jsonwebtoken";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyPassword,
+} from "@/api_helpers/helpers/auth";
+import { sendEmail } from "@/api_helpers/helpers/mail";
 
 // Initialize Prisma client
 const prisma = new PrismaClient();
@@ -24,9 +29,15 @@ export const POST = async (req) => {
 
     // If validation errors exist, return a response with the errors
     if (validationErrors.length > 0) {
-      return sendResponse(NextResponse, 400, false, "Validation errors", {
-        errors: validationErrors,
-      });
+      return sendResponse(
+        NextResponse,
+        400,
+        false,
+        "Validation errors occurred",
+        {
+          errors: validationErrors,
+        }
+      );
     }
 
     // Check if the user with the provided email exists
@@ -39,22 +50,41 @@ export const POST = async (req) => {
 
     // If the user does not exist, return an error response
     if (!existingUser) {
-      return sendResponse(NextResponse, 401, false, "Invalid credentials.");
+      return sendResponse(
+        NextResponse,
+        401,
+        false,
+        "Invalid email or password."
+      );
     }
 
     // Compare the provided password with the hashed password in the database
-    const passwordMatch = await bcrypt.compare(password, existingUser.password);
+    const passwordMatch = await verifyPassword(
+      password,
+      existingUser.password
+    );
 
     // If passwords do not match, return an error response
     if (!passwordMatch) {
-      return sendResponse(NextResponse, 401, false, "Invalid credentials.");
+      return sendResponse(
+        NextResponse,
+        401,
+        false,
+        "Invalid email or password."
+      );
     }
 
-    // Create a JSON Web Token (JWT) for authentication
-    const token = jwt.sign(
-      { userId: existingUser.id },
-      process.env.JWT_SECRET_KEY
-    );
+    const session = {
+      id: existingUser.id,
+      firstName: existingUser.firstName,
+      lastName: existingUser.lastName,
+      email: existingUser.email,
+    };
+
+    // Generate access + refresh token + email token for two-factor authentication
+    const token = generateAccessToken(session);
+    const refreshToken = generateRefreshToken(session);
+    const twoFactorToken = generateTwoFactorToken(session);
 
     // Check if a token record for the user already exists
     const existingToken = await prisma.token.findFirst({
@@ -68,7 +98,8 @@ export const POST = async (req) => {
       await prisma.token.update({
         where: { id: existingToken.id },
         data: {
-          token,
+          token: refreshToken,
+          refreshToken: twoFactorToken,
           isDeleted: false,
           deletedAt: null, // Reset the deleted_at value
         },
@@ -78,20 +109,40 @@ export const POST = async (req) => {
       await prisma.token.create({
         data: {
           userId: existingUser.id,
-          token,
+          token: refreshToken,
+          refreshToken: twoFactorToken,
         },
       });
     }
 
-    // Return a success response with the created user data
-    return sendResponse(NextResponse, 200, true, "User Login successfully.", {
-      user: existingUser,
-      token,
+    // Send email with specified token for two-factor authentication
+    sendEmail({
+      to: existingUser.email,
+      subject: "Verify Your Email",
+      text: `Click this link to login...`,
+      html: `<a href="${process.env.APP_URL}/two-factor?token=${twoFactorToken}">Click here to login</a>`,
     });
+
+    // Return a success response with the created user data
+    return sendResponse(
+      NextResponse,
+      200,
+      true,
+      "User logged in successfully. Please check your email for login instructions.",
+      {
+        user: existingUser,
+        token,
+      }
+    );
   } catch (error) {
-    // Handle any errors that occur during the user creation process
-    console.error("Error creating user:", error);
-    return sendResponse(NextResponse, 500, false, "Internal server error");
+    // Handle any errors that occur during the user login process
+    console.error("Error during user login:", error);
+    return sendResponse(
+      NextResponse,
+      500,
+      false,
+      "Internal server error occurred during login."
+    );
   } finally {
     // Disconnect from the Prisma client to close the database connection
     await prisma.$disconnect();
