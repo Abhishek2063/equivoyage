@@ -1,3 +1,5 @@
+import { APP_URL } from "@/common/config";
+
 export const registrationEmail = (firstName,lastName,email,password) => `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,7 +58,7 @@ export const registrationEmail = (firstName,lastName,email,password) => `<!DOCTY
     </p>
     <p>
       You can now start exploring Equiyoage by visiting our site:
-      <a href="${process.env.APP_URL}" class="button">Go to Equiyoage</a>
+      <a href="${APP_URL}" class="button">Go to Equiyoage</a>
     </p>
     <p>Thank you for choosing Equiyoage! If you have any questions, feel free to contact our support team.</p>
   </div>
