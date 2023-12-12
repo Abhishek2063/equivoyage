@@ -7,7 +7,6 @@ import { registrationEmail } from "../email_contents/registration";
  */
 export const sendEmail = async ({ to, subject, text, html }) => {
   try {
-    console.log(to, "to, subject, text, html");
     // Set the SendGrid API key
     sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
 

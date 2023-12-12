@@ -132,7 +132,6 @@ export const POST = async (req) => {
  */
 export const GET = async (req) => {
   try {
-    console.log(req.params, "req.params");
     // Extract pageNumber from the query parameters, default to 1 if not provided
     const { searchParams } = new URL(req.url);
     const pageNumber = searchParams.get("pageNumber") || 1;

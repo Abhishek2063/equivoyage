@@ -5,13 +5,20 @@ import Link from "next/link";
 import Image from "next/image";
 import logoImage from "../../assets/images/logo.png";
 import "../../assets/css/registration.css";
-import TextInput from "@/components/textInput";
 import { LOGIN } from "@/routeConstant";
-import SubmitButton from "@/components/submitButton";
-import EmailInput from "@/components/emailInput";
-import PasswordInput from "@/components/passwordInput";
+import RegisterationForm from "./registerationForm";
+import { useState } from "react";
 
-const Registration = () => {
+const Page = () => {
+  const [registerDataState, setRegisterDataState] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [registerErrState, setRegisterErrState] = useState([]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-cover bg-blur registrationPage bg-blend-lighten hover:bg-blend-darken">
       <div className="formBox p-8 rounded-lg shadow-md w-96">
@@ -26,55 +33,17 @@ const Registration = () => {
           <h1 className="text-lg font-bold companyTitle">
             <span className="gradient-text">Equiyoage</span>
           </h1>
+          <h3 className="text-lg font-bold companyTitle">
+            <span className="gradient-text">Create An Account</span>
+          </h3>
         </div>
 
-        <form>
-          {/* Form fields */}
-
-          <TextInput
-            name="firstName"
-            isRequired={true}
-            // value="firstName"
-            placeholder="Enter first name."
-            label="First Name"
-            maxLength={20}
-          />
-           <TextInput
-            name="lastName"
-            isRequired={false}
-            // value="firstName"
-            placeholder="Enter last name."
-            label="Last Name"
-            maxLength={20}
-          />
-            <EmailInput
-            name="email"
-            isRequired={true}
-            // value="firstName"
-            placeholder="Enter email."
-            label="Email"
-            maxLength={255}
-          />
-          <PasswordInput 
-           name="password"
-           isRequired={true}
-           // value="firstName"
-           placeholder="Enter Password."
-           label="Password"
-           maxLength={255}
-          />
-
-<PasswordInput 
-           name="confirmPassword"
-           isRequired={true}
-           // value="firstName"
-           placeholder="Enter confirm password."
-           label="Confirm Password"
-           maxLength={255}
-          />
-          {/* Register button */}
-          <SubmitButton buttonName="Sign Up" />
-        </form>
+        <RegisterationForm
+          registerDataState={registerDataState}
+          setRegisterDataState={setRegisterDataState}
+          registerErrState={registerErrState}
+          setRegisterErrState={setRegisterErrState}
+        />
 
         {/* Message above "Go to Login" button */}
         <p className="text-sm text-gray-500 mt-4">
@@ -88,4 +57,4 @@ const Registration = () => {
   );
 };
 
-export default Registration;
+export default Page;
