@@ -1,0 +1,26 @@
+/* assets/css/registration.css */
+
+/* Background image and zoom effect */
+.registrationPage {
+    background-image: url("../images/img-cFfWiBcop7MKI68FfIUKC.jpeg");
+    font-size: 18px;
+  }
+  
+  /* Logo image styles */
+  .logoImage {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+
+  
+  /* Gradient text for company name */
+  .gradient-text {
+    background: linear-gradient(to right, #e50a54, #252527);
+    -webkit-background-clip: text;
+    color: transparent;
+    font-size: 24px;
+  }
+  .formBox{
+    background-color: #ffffff87;
+  }

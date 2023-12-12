@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
-import { validateInputs } from "./Validation";
+import { validateInputs } from "./validation";
+
 
 export const convertToString = (input) => {
   if (input) {
@@ -31,7 +32,7 @@ export const fieldValidator = (
   fieldType = null
 ) => {
   let getError = false,
-    fieldNameErr = field + "Err",
+    fieldNameErr = field,
     errorMsg = "",
     fieldCls = field + "Cls";
   let newField = toWords(field);
