@@ -44,7 +44,13 @@ const RegisterationForm = (props) => {
             )
           }
           onKeyDown={(e) =>
-            handleKeyDown(e, props.registerDataState, props.setRegisterErrState)
+            handleKeyDown(
+              e,
+              props.registerDataState,
+              props.setRegisterDataState,
+              props.setRegisterErrState,
+              props.router
+            )
           }
         />
         <TextInput
@@ -80,7 +86,13 @@ const RegisterationForm = (props) => {
             )
           }
           onKeyDown={(e) =>
-            handleKeyDown(e, props.registerDataState, props.setRegisterErrState)
+            handleKeyDown(
+              e,
+              props.registerDataState,
+              props.setRegisterDataState,
+              props.setRegisterErrState,
+              props.router
+            )
           }
         />
         <EmailInput
@@ -116,7 +128,13 @@ const RegisterationForm = (props) => {
             )
           }
           onKeyDown={(e) =>
-            handleKeyDown(e, props.registerDataState, props.setRegisterErrState)
+            handleKeyDown(
+              e,
+              props.registerDataState,
+              props.setRegisterDataState,
+              props.setRegisterErrState,
+              props.router
+            )
           }
         />
         <PasswordInput
@@ -152,7 +170,13 @@ const RegisterationForm = (props) => {
             )
           }
           onKeyDown={(e) =>
-            handleKeyDown(e, props.registerDataState, props.setRegisterErrState)
+            handleKeyDown(
+              e,
+              props.registerDataState,
+              props.setRegisterDataState,
+              props.setRegisterErrState,
+              props.router
+            )
           }
         />
 
@@ -189,7 +213,13 @@ const RegisterationForm = (props) => {
             )
           }
           onKeyDown={(e) =>
-            handleKeyDown(e, props.registerDataState, props.setRegisterErrState)
+            handleKeyDown(
+              e,
+              props.registerDataState,
+              props.setRegisterDataState,
+              props.setRegisterErrState,
+              props.router
+            )
           }
         />
         {/* Register button */}
@@ -199,7 +229,9 @@ const RegisterationForm = (props) => {
             handleSubmitButton(
               e,
               props.registerDataState,
-              props.setRegisterErrState
+              props.setRegisterDataState,
+              props.setRegisterErrState,
+              props.router
             )
           }
         />
