@@ -8,6 +8,7 @@ import "../../assets/css/registration.css";
 import { LOGIN } from "@/routeConstant";
 import RegisterationForm from "./registerationForm";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const [registerDataState, setRegisterDataState] = useState({
@@ -18,7 +19,7 @@ const Page = () => {
     confirmPassword: "",
   });
   const [registerErrState, setRegisterErrState] = useState([]);
-
+  const router = useRouter()
   return (
     <div className="min-h-screen flex items-center justify-center bg-cover bg-blur registrationPage bg-blend-lighten hover:bg-blend-darken">
       <div className="formBox p-8 rounded-lg shadow-md w-96">
@@ -43,6 +44,7 @@ const Page = () => {
           setRegisterDataState={setRegisterDataState}
           registerErrState={registerErrState}
           setRegisterErrState={setRegisterErrState}
+          router={router}
         />
 
         {/* Message above "Go to Login" button */}

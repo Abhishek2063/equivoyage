@@ -1,7 +1,8 @@
 import { post } from "@/common/api";
 import { fieldValidator } from "@/common/custom";
-import { API_CREATE_USER, LOGIN } from "@/routeConstant";
+import { API_LOGIN_USER } from "@/routeConstant";
 import { message } from "antd";
+import { redirect } from "next/navigation";
 
 export const handleInputChange = (
   event,
@@ -59,32 +60,26 @@ export const handleSubmitButton = async (
   event,
   state,
   setState,
-  setErrorState,
-  router
+  setErrorState,router
 ) => {
   event.preventDefault();
   const isFormValid = validateForm(state, setErrorState);
   if (isFormValid) {
     const newData = {
-      firstName: state.firstName,
-      lastName: state.lastName,
       email: state.email,
       password: state.password,
     };
-    const createdUser = await post(API_CREATE_USER, newData, false);
-    if (createdUser.success) {
-      message.success(createdUser.message);
+    const loginUser = await post(API_LOGIN_USER, newData, false);
+    if (loginUser.success) {
+      message.success(loginUser.message);
       setState({
         ...state,
-        firstName: "",
-        lastName: "",
         email: "",
         password: "",
-        confirmPassword: "",
       });
-      router.push(LOGIN);
+      redirect(LOGIN);
     } else {
-      message.error(createdUser.message);
+      message.error(loginUser.message);
     }
   }
 };
@@ -96,17 +91,13 @@ export const validateForm = (state, setErrorState) => {
       let type = "";
       let maxLength = null;
       let minLength = null;
-      if (key === "firstName" || key === "lastName") {
-        type = "alphabetics";
-        maxLength = 20;
-        minLength = null;
-      }
+     
       if (key === "email") {
         type = "email";
         maxLength = 255;
         minLength = null;
       }
-      if (key === "password" || key === "confirmPassword") {
+      if (key === "password") {
         type = "password";
         maxLength = 20;
         minLength = 8;

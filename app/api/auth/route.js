@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 import {
   generateAccessToken,
   generateRefreshToken,
+  generateTwoFactorToken,
   verifyPassword,
 } from "@/api_helpers/helpers/auth";
 import { sendEmail } from "@/api_helpers/helpers/mail";
@@ -92,6 +93,11 @@ export const POST = async (req) => {
         userId: existingUser.id,
       },
     });
+
+    console.log(token,"token");
+    console.log(refreshToken,"refreshToken");
+    console.log(twoFactorToken,"twoFactorToken");
+
 
     if (existingToken) {
       // Update the existing token record
