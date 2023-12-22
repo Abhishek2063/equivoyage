@@ -77,7 +77,7 @@ export const handleSubmitButton = async (
         email: "",
         password: "",
       });
-      redirect(LOGIN);
+      // redirect(LOGIN);
     } else {
       message.error(loginUser.message);
     }

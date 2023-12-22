@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { generateToken } from "./jwt";
+import { generateToken, verifyToken } from "./jwt";
 
 /**
  * Verifies a password against its hashed counterpart.
@@ -17,19 +17,25 @@ export const verifyPassword = async (password, hash) => {
  * @returns {Promise<string>} - A promise resolving to the generated access token.
  */
 export const generateAccessToken = async (payload) => {
+  console.log(payload, "payload");
+  console.log(
+    process.env.NEXT_PUBLIC_JWT_ACCESS_TOKEN_SECRET,
+    "process.env.NEXT_PUBLIC_JWT_ACCESS_TOKEN_SECRET"
+  );
+
   // Ensure that required environment variables are set
-  if (!process.env.JWT_ACCESS_TOKEN_SECRET) {
+  if (!process.env.NEXT_PUBLIC_JWT_ACCESS_TOKEN_SECRET) {
     throw new Error("ACCESS_TOKEN_SECRET is not set");
   }
 
-  if (!process.env.JWT_ACCESS_TOKEN_EXPIRATION) {
+  if (!process.env.NEXT_PUBLIC_JWT_ACCESS_TOKEN_EXPIRATION) {
     throw new Error("ACCESS_TOKEN_EXPIRATION is not set");
   }
 
   return await generateToken(
     payload,
-    process.env.JWT_ACCESS_TOKEN_SECRET,
-    process.env.JWT_ACCESS_TOKEN_EXPIRATION
+    process.env.NEXT_PUBLIC_JWT_ACCESS_TOKEN_SECRET,
+    process.env.NEXT_PUBLIC_JWT_ACCESS_TOKEN_EXPIRATION
   );
 };
 
@@ -40,18 +46,18 @@ export const generateAccessToken = async (payload) => {
  */
 export const generateRefreshToken = async (payload) => {
   // Ensure that required environment variables are set
-  if (!process.env.JWT_REFRESH_TOKEN_SECRET) {
-    throw new Error("JWT_REFRESH_TOKEN_SECRET is not set");
+  if (!process.env.NEXT_PUBLIC_JWT_REFRESH_TOKEN_SECRET) {
+    throw new Error("NEXT_PUBLIC_JWT_REFRESH_TOKEN_SECRET is not set");
   }
 
-  if (!process.env.JWT_REFRESH_TOKEN_EXPIRATION) {
-    throw new Error("JWT_REFRESH_TOKEN_EXPIRATION is not set");
+  if (!process.env.NEXT_PUBLIC_JWT_REFRESH_TOKEN_EXPIRATION) {
+    throw new Error("NEXT_PUBLIC_JWT_REFRESH_TOKEN_EXPIRATION is not set");
   }
 
   return await generateToken(
     payload,
-    process.env.JWT_REFRESH_TOKEN_SECRET,
-    process.env.JWT_REFRESH_TOKEN_EXPIRATION
+    process.env.NEXT_PUBLIC_JWT_REFRESH_TOKEN_SECRET,
+    process.env.NEXT_PUBLIC_JWT_REFRESH_TOKEN_EXPIRATION
   );
 };
 
@@ -62,17 +68,51 @@ export const generateRefreshToken = async (payload) => {
  */
 export const generateTwoFactorToken = async (payload) => {
   // Ensure that required environment variables are set
-  if (!process.env.JWT_TWO_FACTOR_TOKEN_SECRET) {
-    throw new Error("JWT_TWO_FACTOR_TOKEN_SECRET is not set");
+  if (!process.env.NEXT_PUBLIC_JWT_TWO_FACTOR_TOKEN_SECRET) {
+    throw new Error("NEXT_PUBLIC_JWT_TWO_FACTOR_TOKEN_SECRET is not set");
   }
 
-  if (!process.env.JWT_TWO_FACTOR_TOKEN_EXPIRATION) {
-    throw new Error("JWT_TWO_FACTOR_TOKEN_EXPIRATION is not set");
+  if (!process.env.NEXT_PUBLIC_JWT_TWO_FACTOR_TOKEN_EXPIRATION) {
+    throw new Error("NEXT_PUBLIC_JWT_TWO_FACTOR_TOKEN_EXPIRATION is not set");
   }
 
   return await generateToken(
     payload,
-    process.env.JWT_TWO_FACTOR_TOKEN_SECRET,
-    process.env.JWT_TWO_FACTOR_TOKEN_EXPIRATION
+    process.env.NEXT_PUBLIC_JWT_TWO_FACTOR_TOKEN_SECRET,
+    process.env.NEXT_PUBLIC_JWT_TWO_FACTOR_TOKEN_EXPIRATION
+  );
+};
+
+export const verifyAccessToken = async (token) => {
+  // If environment variable is not set, throw an error
+  if (!process.env.NEXT_PUBLIC_JWT_ACCESS_TOKEN_SECRET) {
+    throw new Error("ACCESS_TOKEN_SECRET is not set");
+  }
+
+  try {
+    // Wrap the verify function in a promise
+    return new Promise((resolve, reject) => {
+      verifyToken(token, process.env.NEXT_PUBLIC_JWT_ACCESS_TOKEN_SECRET, (err, decoded) => {
+        if (err || !decoded) {
+          reject(err);
+        } else {
+          resolve(decoded);
+        }
+      });
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const verifyTwoFactorToken = (token) => {
+  // If environment variable is not set, throw an error
+  if (!process.env.NEXT_PUBLIC_JWT_TWO_FACTOR_TOKEN_SECRET) {
+    throw new Error("NEXT_PUBLIC_JWT_TWO_FACTOR_TOKEN_SECRET is not set");
+  }
+
+  return verifyToken(
+    token,
+    process.env.NEXT_PUBLIC_JWT_TWO_FACTOR_TOKEN_SECRET
   );
 };

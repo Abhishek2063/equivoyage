@@ -26,11 +26,13 @@ export const POST = async (req) => {
         "Missing refresh token"
       );
     }
-
+console.log(  refreshToken,
+  process.env.NEXT_PUBLIC_JWT_REFRESH_TOKEN_SECRET,`  refreshToken,
+  process.env.NEXT_PUBLIC_JWT_REFRESH_TOKEN_SECRET`);
     // Verify the refresh token
     const decoded = await verifyToken(
       refreshToken,
-      process.env.JWT_REFRESH_TOKEN_SECRET
+      process.env.NEXT_PUBLIC_JWT_REFRESH_TOKEN_SECRET
     );
 
     // If the refresh token is valid
