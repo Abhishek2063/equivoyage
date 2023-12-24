@@ -4,11 +4,16 @@ export const REGISTRATION = "/auth/register";
 export const DASHBOARD = "/dashboard";
 export const API_CREATE_USER = "/api/user/";
 export const API_LOGIN_USER = "/api/auth";
+export const API_VERIFY_TOKEN = "/api/verify-token";
 
 export const publicRoutes = [LOGIN, DEFAULT_PATH, REGISTRATION];
 
 export const privateRoutes = [DASHBOARD];
 
-export const publicAPIRoutes = [API_CREATE_USER, API_LOGIN_USER];
+export const publicAPIRoutes = [
+  API_CREATE_USER,
+  API_LOGIN_USER,
+  API_VERIFY_TOKEN,
+];
 
 export const privateAPIRoutes = [];

@@ -11,6 +11,7 @@ import {
   verifyPassword,
 } from "@/api_helpers/helpers/auth";
 import { sendEmail } from "@/api_helpers/helpers/mail";
+import { APP_URL } from "@/common/config";
 
 // Initialize Prisma client
 const prisma = new PrismaClient();
@@ -47,6 +48,13 @@ export const POST = async (req) => {
         email,
         isDeleted: false, // Consider only undeleted users
       },
+      select:{
+        id:true,
+        firstName:true,
+        lastName: true,
+        email:true,
+        password:true
+      }
     });
 
     // If the user does not exist, return an error response
@@ -58,7 +66,10 @@ export const POST = async (req) => {
         "Invalid email or password."
       );
     }
-
+console.log(password,
+  existingUser.password,`password,
+  existingUser.password`);
+  console.log(existingUser,"existingUser");
     // Compare the provided password with the hashed password in the database
     const passwordMatch = await verifyPassword(
       password,
@@ -83,9 +94,11 @@ export const POST = async (req) => {
     };
 
     // Generate access + refresh token + email token for two-factor authentication
-    const token = generateAccessToken(session);
-    const refreshToken = generateRefreshToken(session);
-    const twoFactorToken = generateTwoFactorToken(session);
+    console.log(session,"session");
+    console.log(process.env.NEXT_PUBLIC_JWT_ACCESS_TOKEN_SECRET,"process.env.NEXT_PUBLIC_JWT_ACCESS_TOKEN_SECRET");
+    const token = await generateAccessToken(session);
+    const refreshToken = await generateRefreshToken(session);
+    const twoFactorToken = await generateTwoFactorToken(session);
 
     // Check if a token record for the user already exists
     const existingToken = await prisma.token.findFirst({
@@ -94,9 +107,6 @@ export const POST = async (req) => {
       },
     });
 
-    console.log(token,"token");
-    console.log(refreshToken,"refreshToken");
-    console.log(twoFactorToken,"twoFactorToken");
 
 
     if (existingToken) {
@@ -126,7 +136,7 @@ export const POST = async (req) => {
       to: existingUser.email,
       subject: "Verify Your Email",
       text: `Click this link to login...`,
-      html: `<a href="${process.env.APP_URL}/two-factor?token=${twoFactorToken}">Click here to login</a>`,
+      html: `<a href="${APP_URL}/two-factor?token=${twoFactorToken}">Click here to login</a>`,
     });
 
     // Return a success response with the created user data
