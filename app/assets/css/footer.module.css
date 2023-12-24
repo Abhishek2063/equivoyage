@@ -1,0 +1,23 @@
+/* footer.module.css */
+
+.footer {
+    text-align: center;
+    padding: 20px; /* Increase padding for better visual appeal */
+    background-color: #333; /* Dark background color */
+    color: white; /* Text color */
+    position: relative;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  /* Optional: Add styling for the text inside the footer */
+  .footer p {
+    margin: 0;
+    font-size: 1rem;
+  }
+  
+  /* Optional: Add hover effect */
+  .footer:hover {
+    background-color: #555; /* Darker background color on hover */
+  }
+  
