@@ -2,6 +2,7 @@
 
 import axios from 'axios';
 import { APP_URL } from './config';
+import { getToken } from '@/storage/token';
 
 const baseURL = APP_URL || 'https://equivoyage.vercel.app';
 
@@ -19,7 +20,7 @@ api.interceptors.request.use(
     const isAuthorized = config.isAuthorized !== undefined ? config.isAuthorized : true;
 
     if (isAuthorized) {
-      const accessToken = sessionStorage.getItem('access_token');
+      const accessToken = getToken();
 
       if (accessToken) {
         config.headers.Authorization = `Bearer ${accessToken}`;

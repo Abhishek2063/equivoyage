@@ -5,7 +5,11 @@ import Header from '@/common/header';
 import "../assets/css/header.module.css"
 import "../assets/css/footer.module.css"
 import Starfield from 'react-starfield';
+import { message } from 'antd';
 const DashboardLayout = ({ children }) => {
+  message.config({
+    maxCount: 1,
+  });
   return (
     <div className="dashboard-layout">
       {/* Header */}

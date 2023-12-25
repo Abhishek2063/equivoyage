@@ -124,7 +124,13 @@ export const GET = async (req, { params }) => {
   try {
     // Extract user ID from the route parameters
     const userId = parseInt(params.id);
+    // Set default values for pagination
+    const queryString = req.url.split('?')[1];
+    const page = Number(new URLSearchParams(queryString).get('page')) || 1;
+    const limit = Number(new URLSearchParams(queryString).get('limit')) || 10;
 
+    // Calculate the skip value for pagination
+    const skip = (page - 1) * limit;
     // Fetch participant records for the specified user, ordered by creation date
     const records = await prisma.participant.findMany({
       where: {
@@ -134,6 +140,8 @@ export const GET = async (req, { params }) => {
       orderBy: {
         createdAt: "desc",
       },
+      take: limit,
+      skip: skip,
       select: {
         id: true,
         user: {
@@ -162,12 +170,26 @@ export const GET = async (req, { params }) => {
         },
       },
     });
+      // Get the total count of records
+      const totalCount = await prisma.participant.count({
+        where: {
+          isDeleted: false,
+          userId: userId,
+        },
+      });
+      // Calculate total pages
+    const totalPages = Math.ceil(totalCount / limit);
     return sendResponse(
       NextResponse,
       200,
       true,
       "Trip data fetched successfully.",
-      records
+      {
+        page,
+        totalPages,
+        totalCount,
+        data: records,
+      }
     );
   } catch (error) {
     // Handle any errors that occur during the trip update process
