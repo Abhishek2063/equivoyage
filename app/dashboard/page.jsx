@@ -1,9 +1,20 @@
 "use client";
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import TripList from './TripList';
+import { getTripListData } from './event';
 
 const Dashboard = () => {
+  const [tripListData,setTripListData] = useState([])
+  useEffect(()=>{
+    getTripListData(setTripListData)
+  },[])
   return (
-    <div>Dashboard</div>
+    <>
+    <TripList 
+    tripListData={tripListData}
+    setTripListData = {setTripListData}
+    />
+    </>
   )
 }
 
