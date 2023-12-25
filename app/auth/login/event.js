@@ -1,6 +1,8 @@
 import { post } from "@/common/api";
 import { fieldValidator } from "@/common/custom";
-import { API_LOGIN_USER } from "@/routeConstant";
+import { API_LOGIN_USER, DASHBOARD } from "@/routeConstant";
+import { setToken } from "@/storage/token";
+import { setUserDetails } from "@/storage/user";
 import { message } from "antd";
 import { redirect } from "next/navigation";
 
@@ -71,13 +73,16 @@ export const handleSubmitButton = async (
     };
     const loginUser = await post(API_LOGIN_USER, newData, false);
     if (loginUser.success) {
-      message.success(loginUser.message);
       setState({
         ...state,
         email: "",
         password: "",
       });
-      // redirect(LOGIN);
+      setToken(loginUser.data.token)
+      setUserDetails(loginUser.data.user)
+      message.success(loginUser.message)
+      router.push(DASHBOARD);
+
     } else {
       message.error(loginUser.message);
     }

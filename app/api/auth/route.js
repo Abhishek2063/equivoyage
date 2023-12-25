@@ -66,10 +66,7 @@ export const POST = async (req) => {
         "Invalid email or password."
       );
     }
-console.log(password,
-  existingUser.password,`password,
-  existingUser.password`);
-  console.log(existingUser,"existingUser");
+
     // Compare the provided password with the hashed password in the database
     const passwordMatch = await verifyPassword(
       password,
@@ -94,8 +91,7 @@ console.log(password,
     };
 
     // Generate access + refresh token + email token for two-factor authentication
-    console.log(session,"session");
-    console.log(process.env.NEXT_PUBLIC_JWT_ACCESS_TOKEN_SECRET,"process.env.NEXT_PUBLIC_JWT_ACCESS_TOKEN_SECRET");
+  
     const token = await generateAccessToken(session);
     const refreshToken = await generateRefreshToken(session);
     const twoFactorToken = await generateTwoFactorToken(session);
@@ -144,7 +140,7 @@ console.log(password,
       NextResponse,
       200,
       true,
-      "User logged in successfully. Please check your email for login instructions.",
+      "User logged in successfully.",
       {
         user: existingUser,
         token,

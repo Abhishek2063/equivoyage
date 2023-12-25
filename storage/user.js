@@ -1,36 +1,59 @@
-export function setUserDetails(data) {
-    sessionStorage.setItem("typeData", btoa(JSON.stringify(data)));
+import Cookies from 'js-cookie';
+
+export const isBrowser = () => {
+  return typeof window !== "undefined";
+};
+
+export const setUserDetails = (data) => {
+  if (isBrowser()) {
+    Cookies.set("typeData", btoa(JSON.stringify(data)));
   }
-  
-  export function clearUserDetails() {
-    sessionStorage.setItem("typeData", null);
+};
+
+export const clearUserDetails = () => {
+  if (isBrowser()) {
+    Cookies.remove("typeData");
   }
-  
-  export const getUserDetails = () => {
-    if (sessionStorage.getItem("typeData") === null) {
-      return "";
+};
+
+export const getUserDetails = () => {
+  if (isBrowser()) {
+    const typeData = Cookies.get("typeData");
+    if (!typeData) {
+      return null;
     }
+
     try {
-      const userData = JSON.parse(atob(sessionStorage.getItem("typeData")));
+      const userData = JSON.parse(atob(typeData));
       return userData;
     } catch (e) {
-      return;
+      console.error("Error parsing user data:", e);
+      return null;
     }
-  };
-  
-  export function setEntityData(data) {
-    sessionStorage.setItem("entityData", btoa(JSON.stringify(data)));
   }
-  
-  export const getEntityData = () => {
-    if (sessionStorage.getItem("entityData") === null) {
-      return "";
+  return null;
+};
+
+export const setEntityData = (data) => {
+  if (isBrowser()) {
+    Cookies.set("entityData", btoa(JSON.stringify(data)));
+  }
+};
+
+export const getEntityData = () => {
+  if (isBrowser()) {
+    const entityData = Cookies.get("entityData");
+    if (!entityData) {
+      return null;
     }
+
     try {
-      const userData = JSON.parse(atob(sessionStorage.getItem("entityData")));
-      return userData;
+      const data = JSON.parse(atob(entityData));
+      return data;
     } catch (e) {
-      return;
+      console.error("Error parsing entity data:", e);
+      return null;
     }
-  };
-  
+  }
+  return null;
+};

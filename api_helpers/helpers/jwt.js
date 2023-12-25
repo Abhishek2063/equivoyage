@@ -8,7 +8,6 @@ import { sign, verify } from "jsonwebtoken";
  * @returns {Promise<string>} - A promise resolving to the generated JWT.
  */
 export const generateToken = async (payload, secret, expiresIn) => {
-  console.log(payload, secret, expiresIn, "payload, secret, expiresIn");
   // Use the `sign` function from the 'jsonwebtoken' library to generate the token
   return await sign(payload, secret, { expiresIn });
 };

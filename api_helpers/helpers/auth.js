@@ -17,11 +17,7 @@ export const verifyPassword = async (password, hash) => {
  * @returns {Promise<string>} - A promise resolving to the generated access token.
  */
 export const generateAccessToken = async (payload) => {
-  console.log(payload, "payload");
-  console.log(
-    process.env.NEXT_PUBLIC_JWT_ACCESS_TOKEN_SECRET,
-    "process.env.NEXT_PUBLIC_JWT_ACCESS_TOKEN_SECRET"
-  );
+
 
   // Ensure that required environment variables are set
   if (!process.env.NEXT_PUBLIC_JWT_ACCESS_TOKEN_SECRET) {
