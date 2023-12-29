@@ -4,8 +4,7 @@ const TripList = (props) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
       {props.tripListData.map((trip) => (
-        <div key={trip.id}>
-          {console.log(trip.trip.tripName)}
+        <div key={trip.id} className='trip_list_card'>
           <div className="bg-white p-4 rounded-md shadow-md">
             <h3 className="text-lg font-semibold mb-2 text-black">{trip.trip.tripName}</h3>
             <p className="text-sm text-gray-500 mb-2">

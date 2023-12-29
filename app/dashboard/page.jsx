@@ -10,7 +10,6 @@ const Dashboard = () => {
   const [totalPage,setTotalPage] = useState(0)
   const [totalRecords,setTotalRecords] = useState(0)
   const userData = getUserDetails()
-  console.log(userData,"userData");
   useEffect(()=>{
     getTripListData(setTripListData,userData,setPage, setTotalPage,setTotalRecords,page )
   },[])
